@@ -1,43 +1,53 @@
-name: CI/CD Pipeline
+name: CI/CD
 
-# Trigger on push or PR to main
 on:
   push:
     branches:
       - main
   pull_request:
-    branches:
-      - main
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         service: [api-gateway, auth-service, url-service, analytics-service]
 
     steps:
-      # Step 1: Checkout repo
-      - name: Checkout code
+      # 1. Checkout the repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
-      - name: Setup Node.js
+      # 2. Set up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22
+          node-version: '20'
 
-      # Step 3: Install dependencies
+      # 3. Cache node_modules per service
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: ./services/${{ matrix.service }}/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ matrix.service }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.service }}
+
+      # 4. Install dependencies
       - name: Install dependencies
         working-directory: ./services/${{ matrix.service }}
-        run: npm install
+        run: npm ci
 
-      # Step 4: Run tests
+      # 5. Run tests with coverage
       - name: Run tests
         working-directory: ./services/${{ matrix.service }}
         run: npm test
 
-      # Optional: Build service
-      - name: Build service
-        working-directory: ./services/${{ matrix.service }}
-        run: npm run build || echo "No build script found"
+      # 6. Upload coverage as artifact (optional, for later use)
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ matrix.service }}
+          path: ./services/${{ matrix.service }}/coverage
