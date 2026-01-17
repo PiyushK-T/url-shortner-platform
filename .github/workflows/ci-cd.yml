@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+# Trigger on push or PR to main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api-gateway, auth-service, url-service, analytics-service]
+
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        working-directory: ./services/${{ matrix.service }}
+        run: npm install
+
+      # Step 4: Run tests
+      - name: Run tests
+        working-directory: ./services/${{ matrix.service }}
+        run: npm test
+
+      # Optional: Build service
+      - name: Build service
+        working-directory: ./services/${{ matrix.service }}
+        run: npm run build || echo "No build script found"
