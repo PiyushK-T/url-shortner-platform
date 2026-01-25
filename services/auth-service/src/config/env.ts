@@ -1,7 +1,10 @@
+import dotenv from "dotenv";
 import { z } from "zod";
 
-const envSchema = z.object({
-  PORT: z.string().optional(), 
+dotenv.config();
+
+export const envSchema = z.object({
+  PORT: z.string().default("4000"),
   AUTH_SERVICE_URL: z.string().optional(),
   URL_SERVICE_URL: z.string().optional(),
   ANALYTICS_SERVICE_URL: z.string().optional(),

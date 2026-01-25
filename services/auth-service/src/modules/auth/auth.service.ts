@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt, { SignOptions, Secret } from "jsonwebtoken";
-import { env } from "../../config/env";
+// import { env } from "../../config/env";
+import { getEnv } from "../config/env";
+const env = getEnv();
 
 type User = {
   email: string;

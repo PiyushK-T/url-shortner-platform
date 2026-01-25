@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { env } from "../config/env";
+// import { env } from "../config/env";
+import { getEnv } from "../config/env";
+const env = getEnv();
+
 import { proxy } from "../middlewares/proxy.middleware";
 
 export const proxyRouter = Router();

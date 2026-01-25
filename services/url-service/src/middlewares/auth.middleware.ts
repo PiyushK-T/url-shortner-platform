@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
-import { env } from "../config/env";
+// import { env } from "../config/env";
+import { getEnv } from "../config/env";
+const env = getEnv();
 
 export interface AuthRequest extends Request {
   userEmail?: string;
