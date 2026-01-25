@@ -1,13 +1,21 @@
 import { z } from "zod";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const envSchema = z.object({
-  PORT: z.string().transform(Number),
-  JWT_SECRET: z.string().min(10),
-  ANALYTICS_SERVICE_URL: z.string().url(),
-  BASE_URL: z.string().url()
+  PORT: z.string().optional(), 
+  AUTH_SERVICE_URL: z.string().optional(),
+  URL_SERVICE_URL: z.string().optional(),
+  ANALYTICS_SERVICE_URL: z.string().optional(),
+  JWT_SECRET: z.string().optional(),
+  JWT_EXPIRES_IN: z.string().optional(),
 });
 
-export const env = envSchema.parse(process.env);
+export type Env = z.infer<typeof envSchema>;
+
+let cachedEnv: Env | null = null;
+
+export function getEnv(): Env {
+  if (!cachedEnv) {
+    cachedEnv = envSchema.parse(process.env);
+  }
+  return cachedEnv;
+}

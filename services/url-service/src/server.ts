@@ -1,10 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { app } from "./app";
-import { env } from "./config/env";
+import { getEnv } from "./config/env";
 
-const server = app.listen(env.PORT, () => {
-  console.log(`URL Service running on port ${env.PORT}`);
-});
+const { PORT } = getEnv();
+const port = PORT ? Number(PORT) : 4002;
 
-process.on("SIGTERM", () => {
-  server.close(() => process.exit(0));
+app.listen(port, () => {
+  console.log(`URL service running on port ${port}`);
 });

@@ -1,13 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { app } from "./app";
-import { env } from "./config/env";
+import { getEnv } from "./config/env";
 
-const server = app.listen(env.PORT, () => {
-  console.log(`API Gateway running on port ${env.PORT}`);
-});
+const { PORT, AUTH_SERVICE_URL, URL_SERVICE_URL, ANALYTICS_SERVICE_URL } = getEnv();
+const port = PORT ? Number(PORT) : 4000;
 
-process.on("SIGTERM", () => {
-  server.close(() => {
-    console.log("API Gateway shutdown complete");
-    process.exit(0);
-  });
+app.listen(port, () => {
+  console.log(`API Gateway running on port ${port}`);
 });

@@ -1,10 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { app } from "./app";
-import { env } from "./config/env";
+import { getEnv } from "./config/env";
 
-const server = app.listen(env.PORT, () => {
-  console.log(`Auth Service running on port ${env.PORT}`);
-});
+const { PORT, JWT_SECRET, JWT_EXPIRES_IN } = getEnv();
+const port = PORT ? Number(PORT) : 4001;
 
-process.on("SIGTERM", () => {
-  server.close(() => process.exit(0));
+app.listen(port, () => {
+  console.log(`Auth service running on port ${port}`);
 });
