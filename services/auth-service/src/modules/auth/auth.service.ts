@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt, { SignOptions, Secret } from "jsonwebtoken";
 // import { env } from "../../config/env";
-import { getEnv } from "../config/env";
+import { getEnv } from "../../config/env";
 const env = getEnv();
 
 type User = {
@@ -33,7 +33,7 @@ export async function login(email: string, password: string) {
     throw new Error("Invalid credentials");
   }
 
-const secret: Secret = env.JWT_SECRET;
+const secret: Secret = env.JWT_SECRET as Secret;
 
 const options: SignOptions = {
   expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"]

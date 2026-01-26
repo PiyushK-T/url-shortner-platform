@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import axios from "axios";
 // import { env } from "../../config/env";
-import { getEnv } from "../config/env";
+import { getEnv } from "../../config/env";
 const env = getEnv();
 
 type UrlRecord = {

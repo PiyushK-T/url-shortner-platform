@@ -19,7 +19,10 @@ export function authenticate(
   }
 
   const token = authHeader.replace("Bearer ", "");
-  const secret: Secret = env.JWT_SECRET;
+  const secret = env.JWT_SECRET;
+  if (!secret) {
+    return res.status(500).json({ message: "JWT secret is not configured" });
+  }
 
   try {
     const payload = jwt.verify(token, secret) as JwtPayload;

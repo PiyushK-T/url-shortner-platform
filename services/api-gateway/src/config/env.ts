@@ -10,6 +10,7 @@ export const envSchema = z.object({
   ANALYTICS_SERVICE_URL: z.string().optional(),
   JWT_SECRET: z.string().optional(),
   JWT_EXPIRES_IN: z.string().optional(),
+  BASE_URL: z.string().default("http://localhost:3000"),
 });
 
 export type Env = z.infer<typeof envSchema>;
