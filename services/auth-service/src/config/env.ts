@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
 import { z } from "zod";
 
-// dotenv.config();
-dotenv.config({ path: ".env.test" });
+dotenv.config();
 
 export const envSchema = z.object({
   PORT: z.string().default("4000"),
