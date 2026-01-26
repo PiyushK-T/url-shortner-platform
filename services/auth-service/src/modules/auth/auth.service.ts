@@ -36,7 +36,7 @@ export async function login(email: string, password: string) {
 const secret: Secret = env.JWT_SECRET as Secret;
 
 const options: SignOptions = {
-  expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"]
+  expiresIn: env.JWT_EXPIRES_IN ? parseInt(env.JWT_EXPIRES_IN, 10) : "1h"
 };
 
 const token = jwt.sign({ email }, secret, options);
