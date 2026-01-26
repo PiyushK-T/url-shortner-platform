@@ -7,7 +7,8 @@ exports.envSchema = void 0;
 exports.getEnv = getEnv;
 const dotenv_1 = __importDefault(require("dotenv"));
 const zod_1 = require("zod");
-dotenv_1.default.config();
+// dotenv.config();
+dotenv_1.default.config({ path: ".env.test" });
 exports.envSchema = zod_1.z.object({
     PORT: zod_1.z.string().default("4000"),
     AUTH_SERVICE_URL: zod_1.z.string().optional(),
