@@ -1,6 +1,6 @@
 # URL Shortener Platform
 
-[![Build](https://img.shields.io/github/actions/workflow/status/PiyushK-T/url-shortner-platform/nodejs.yml?branch=main&label=build&logo=github)](https://github.com/PiyushK-T/url-shortner-platform/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/PiyushK-T/url-shortner-platform/ci.yml?branch=main&label=build&logo=github)](https://github.com/PiyushK-T/url-shortner-platform/actions)
 [![Coverage](https://img.shields.io/badge/coverage-88%25-brightgreen)](#tests)
 [![License](https://img.shields.io/github/license/PiyushK-T/url-shortner-platform)](LICENSE)
 
@@ -8,7 +8,20 @@ A **microservices-based URL shortener platform** built with **TypeScript**, **No
 This project implements a full microservices architecture with **authentication**, **URL shortening**, and **analytics tracking**.
 
 ---
+## CI / CD
 
+### GitHub Actions Status
+
+[![CI](https://img.shields.io/github/actions/workflow/status/PiyushK-T/url-shortner-platform/ci.yml?branch=main&label=CI&logo=github)](https://github.com/PiyushK-T/url-shortner-platform/actions)
+
+This project uses a comprehensive **GitHub Actions CI/CD pipeline** that:
+
+- Runs a **matrix build** for all microservices: `api-gateway`, `auth-service`, `url-service`, `analytics-service`
+- Installs dependencies and builds TypeScript code (`tsc`)
+- Runs Jest tests in each service (`--runInBand`, `--passWithNoTests`)
+- Ensures strict environment validation and test-safe configuration with dotenv and Zod
+
+---
 ## 🏗 Architecture
 
 The platform consists of the following services:
@@ -165,3 +178,4 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 * Analytics events are **asynchronous** to avoid blocking.
 * Environment config handled with `dotenv`.
 * Designed for **scalability**: can easily add more services.
+
