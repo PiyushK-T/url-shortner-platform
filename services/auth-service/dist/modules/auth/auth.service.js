@@ -30,7 +30,7 @@ async function login(email, password) {
     }
     const secret = env.JWT_SECRET;
     const options = {
-        expiresIn: env.JWT_EXPIRES_IN
+        expiresIn: env.JWT_EXPIRES_IN ? parseInt(env.JWT_EXPIRES_IN, 10) : "1h"
     };
     const token = jsonwebtoken_1.default.sign({ email }, secret, options);
     return { token };

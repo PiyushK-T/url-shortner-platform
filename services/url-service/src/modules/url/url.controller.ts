@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { createUrlSchema } from "./url.schemas";
 import * as service from "./url.service";
-import { AuthRequest } from "../../middlewares/auth.middleware";
+import { AuthRequest } from "../../middleware/auth.middleware";
 
 export function createUrl(req: AuthRequest, res: Response) {
   const dto = createUrlSchema.parse(req.body);

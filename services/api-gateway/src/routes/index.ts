@@ -3,7 +3,7 @@ import { Router } from "express";
 import { getEnv } from "../config/env";
 const env = getEnv();
 
-import { proxy } from "../middlewares/proxy.middleware";
+import { proxy } from "../middleware/proxy.middleware";
 
 export const proxyRouter = Router();
 

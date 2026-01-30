@@ -9,6 +9,11 @@ const analytics_routes_1 = __importDefault(require("./routes/analytics.routes"))
 const error_middleware_1 = require("./middleware/error.middleware");
 exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
+exports.app.use((req, res, next) => {
+    const requestId = req.headers["x-request-id"];
+    console.log(`[${requestId}] ${req.method} ${req.originalUrl}`);
+    next();
+});
 exports.app.use("/analytics", analytics_routes_1.default);
 exports.app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok", service: "analytics-service" });

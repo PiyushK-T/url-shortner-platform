@@ -6,9 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const url_routes_1 = require("./modules/url/url.routes");
-const error_middleware_1 = require("./middlewares/error.middleware");
+const error_middleware_1 = require("./middleware/error.middleware");
 exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
+exports.app.use((req, res, next) => {
+    const requestId = req.headers["x-request-id"];
+    console.log(`[${requestId}] ${req.method} ${req.originalUrl}`);
+    next();
+});
 exports.app.get("/health", (_, res) => {
     res.status(200).json({ status: "ok" });
 });

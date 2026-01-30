@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.urlRouter = void 0;
 const express_1 = require("express");
 const controller = __importStar(require("./url.controller"));
-const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
 exports.urlRouter = (0, express_1.Router)();
 exports.urlRouter.post("/", auth_middleware_1.authenticate, controller.createUrl);
 exports.urlRouter.get("/:code", controller.redirect);

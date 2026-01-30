@@ -6,6 +6,12 @@ export const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  const requestId = req.headers["x-request-id"];
+  console.log(`[${requestId}] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 app.use("/analytics", analyticsRoutes);
 
 app.get("/health", (_req, res) => {

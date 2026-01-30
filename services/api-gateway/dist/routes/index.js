@@ -5,7 +5,7 @@ const express_1 = require("express");
 // import { env } from "../config/env";
 const env_1 = require("../config/env");
 const env = (0, env_1.getEnv)();
-const proxy_middleware_1 = require("../middlewares/proxy.middleware");
+const proxy_middleware_1 = require("../middleware/proxy.middleware");
 exports.proxyRouter = (0, express_1.Router)();
 exports.proxyRouter.use("/api/auth", (0, proxy_middleware_1.proxy)(env.AUTH_SERVICE_URL || ""));
 exports.proxyRouter.use("/api/url", (0, proxy_middleware_1.proxy)(env.URL_SERVICE_URL || ""));
