@@ -8,7 +8,7 @@ export const envSchema = z.object({
   AUTH_SERVICE_URL: z.string().optional(),
   URL_SERVICE_URL: z.string().optional(),
   ANALYTICS_SERVICE_URL: z.string().optional(),
-  JWT_SECRET: z.string().optional(),
+  JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
   JWT_EXPIRES_IN: z.string().optional(),
   BASE_URL: z.string().default("http://localhost:3000"),
 });
