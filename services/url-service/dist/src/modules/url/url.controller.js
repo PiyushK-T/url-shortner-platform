@@ -33,17 +33,32 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUrl = createUrl;
-exports.redirect = redirect;
-const url_schemas_1 = require("./url.schemas");
-const service = __importStar(require("./url.service"));
-function createUrl(req, res) {
-    const dto = url_schemas_1.createUrlSchema.parse(req.body);
-    const result = service.createShortUrl(dto.longUrl, req.userEmail);
-    res.status(201).json(result);
+exports.createUrlHandler = createUrlHandler;
+exports.redirectHandler = redirectHandler;
+const urlService = __importStar(require("./url.service"));
+async function createUrlHandler(req, res, next) {
+    try {
+        const { longUrl } = req.body;
+        const ownerEmail = req.headers["x-user-email"];
+        const result = urlService.createShortUrl(longUrl, ownerEmail);
+        res.status(201).json(result);
+    }
+    catch (err) {
+        next(err);
+    }
 }
-async function redirect(req, res) {
-    const code = req.params.code;
-    const longUrl = await service.resolveUrl(code);
-    res.redirect(longUrl);
+async function redirectHandler(req, res, next) {
+    try {
+        const param = req.params.code;
+        if (!param || Array.isArray(param)) {
+            return res.status(400).json({
+                error: "Invalid short URL code"
+            });
+        }
+        const longUrl = await urlService.resolveUrl(param);
+        res.redirect(302, longUrl);
+    }
+    catch (err) {
+        next(err);
+    }
 }

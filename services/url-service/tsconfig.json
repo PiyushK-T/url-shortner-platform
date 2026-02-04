@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "module": "CommonJS",
     "target": "ES2020",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "express","jest"],
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts","tests"],
   "exclude": [
-    "tests",
     "dist",
     "node_modules",
     "**/*.test.ts",

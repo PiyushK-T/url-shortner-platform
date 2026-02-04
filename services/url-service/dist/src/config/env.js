@@ -13,7 +13,7 @@ exports.envSchema = zod_1.z.object({
     AUTH_SERVICE_URL: zod_1.z.string().optional(),
     URL_SERVICE_URL: zod_1.z.string().optional(),
     ANALYTICS_SERVICE_URL: zod_1.z.string().optional(),
-    JWT_SECRET: zod_1.z.string().optional(),
+    JWT_SECRET: zod_1.z.string().min(1, "JWT_SECRET is required"),
     JWT_EXPIRES_IN: zod_1.z.string().optional(),
     BASE_URL: zod_1.z.string().default("http://localhost:3000"),
 });

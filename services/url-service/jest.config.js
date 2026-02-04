@@ -1,7 +1,0 @@
-module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  testMatch: ["**/tests/**/*.test.ts", "**/*.test.ts"],
-  setupFiles: ["<rootDir>/jest.setup.ts"],
-  clearMocks: true
-};

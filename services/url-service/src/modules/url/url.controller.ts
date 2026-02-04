@@ -1,34 +1,41 @@
-import axios from "axios";
-import { getEnv } from "../../config/env";
-import {
-  HEADER_REQUEST_ID,
-  HEADER_USER_EMAIL,
-} from "../constants/headers";
+import { Request, Response, NextFunction } from "express";
+import * as urlService from "./url.service";
 
-const env = getEnv();
+export async function createUrlHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { longUrl } = req.body;
+    const ownerEmail = req.headers["x-user-email"] as string;
 
-export async function redirectUrl(req: Request, res: Response) {
-  const { code } = req.params;
+    const result = urlService.createShortUrl(longUrl, ownerEmail);
 
-  const longUrl = await service.resolveUrl(code);
-  if (!longUrl) {
-    return res.status(404).send("Not found");
+    res.status(201).json(result);
+  } catch (err) {
+    next(err);
   }
+}
 
-  // Event data
-  const event = {
-    requestId: req.headers[HEADER_REQUEST_ID] as string,
-    userEmail: req.headers[HEADER_USER_EMAIL] as string,
-    code,
-    timestamp: new Date().toISOString(),
-    userAgent: req.headers["user-agent"],
-    ip: req.ip
-  };
+export async function redirectHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const param = req.params.code;
 
-  // Non-blocking analytics dispatch
-  axios.post(`${env.ANALYTICS_SERVICE_URL}/track`, event).catch(() => {
-    console.warn("Analytics post failed");
-  });
+    if (!param || Array.isArray(param)) {
+      return res.status(400).json({
+        error: "Invalid short URL code"
+      });
+    }
 
-  return res.redirect(longUrl);
+    const longUrl = await urlService.resolveUrl(param);
+
+    res.redirect(302, longUrl);
+  } catch (err) {
+    next(err);
+  }
 }
