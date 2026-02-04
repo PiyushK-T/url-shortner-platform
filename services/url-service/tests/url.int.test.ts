@@ -63,4 +63,24 @@ describe("URL Service", () => {
     expect(res.status).toBe(302);
     expect(res.header.location).toBe("https://example.com");
   });
+
+  it("sends analytics on redirect", async () => {
+  const spy = jest.spyOn(axios, "post");
+
+  await request(app)
+    .post("/url")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ longUrl: "https://example.com" });
+
+  await request(app)
+    .get("/url/testcode")
+    .set(HEADER_REQUEST_ID, "rid")
+    .set(HEADER_USER_EMAIL, "user@test.com");
+
+  expect(spy).toHaveBeenCalledWith(
+    `${env.ANALYTICS_SERVICE_URL}/track`,
+    expect.objectContaining({ code: "testcode" })
+  );
+});
+
 });
