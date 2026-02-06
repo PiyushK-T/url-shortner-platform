@@ -1,8 +1,13 @@
 import { Router } from "express";
-import * as controller from "./url.controller";
-import { authenticate } from "../../middleware/auth.middleware";
+import {
+  createUrlHandler,
+  redirectHandler
+} from "./url.controller";
 
 export const urlRouter = Router();
 
-urlRouter.post("/", authenticate, controller.createUrl);
-urlRouter.get("/:code", controller.redirect);
+// protected
+urlRouter.post("/", createUrlHandler);
+
+// public
+urlRouter.get("/:code", redirectHandler);

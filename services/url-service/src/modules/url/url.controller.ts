@@ -1,16 +1,46 @@
-import { Response } from "express";
-import { createUrlSchema } from "./url.schemas";
-import * as service from "./url.service";
-import { AuthRequest } from "../../middleware/auth.middleware";
+import { Request, Response, NextFunction } from "express";
+import * as urlService from "./url.service";
 
-export function createUrl(req: AuthRequest, res: Response) {
-  const dto = createUrlSchema.parse(req.body);
-  const result = service.createShortUrl(dto.longUrl, req.userEmail!);
-  res.status(201).json(result);
+export async function createUrlHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { longUrl } = req.body;
+    const ownerEmail = req.headers["x-user-email"] as string;
+
+    if (!longUrl) {
+      return res.status(400).json({ error: "longUrl is required" });
+    }
+
+    if (!ownerEmail) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const result = urlService.createShortUrl(longUrl, ownerEmail);
+
+    return res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
 }
 
-export async function redirect(req: AuthRequest, res: Response) {
-  const code = req.params.code as string;
-  const longUrl = await service.resolveUrl(code);
-  res.redirect(longUrl);
+export async function redirectHandler(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const code =
+      typeof req.params.code === "string"
+        ? req.params.code
+        : req.params.code[0];
+
+    const longUrl = await urlService.resolveUrl(code);
+
+    return res.redirect(302, longUrl);
+  } catch {
+    return res.status(404).json({ error: "URL not found" });
+  }
 }

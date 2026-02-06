@@ -32,3 +32,19 @@ export function authenticate(
     res.status(401).json({ message: "Invalid token" });
   }
 }
+
+export function requireUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const userEmail = req.headers["x-user-email"];
+
+  if (!userEmail || typeof userEmail !== "string") {
+    return res.status(401).json({
+      error: "Unauthorized: missing user identity"
+    });
+  }
+
+  next();
+}
