@@ -1,1 +1,1 @@
-export const nanoid = () => "test-code";
+export const nanoid = () => "testcode";

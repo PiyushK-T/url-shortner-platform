@@ -33,11 +33,18 @@ export async function resolveUrl(code: string) {
     throw new Error("URL not found");
   }
 
-  // fire-and-forget analytics
-  axios.post(`${env.ANALYTICS_SERVICE_URL}/events`, {
-    code,
-    timestamp: new Date().toISOString()
-  }).catch(() => {});
+  if (process.env.NODE_ENV !== "test") {
+    axios
+      .post(`${env.ANALYTICS_SERVICE_URL}/events`, {
+        code,
+        timestamp: new Date().toISOString()
+      })
+      .catch(() => {});
+  }
 
   return record.longUrl;
+}
+
+export function __clearUrlsForTests() {
+  urls.clear();
 }

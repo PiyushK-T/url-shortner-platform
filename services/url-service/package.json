@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "clean": "rimraf dist",
     "build": "tsc",
-    "test": "jest --passWithNoTests",
-    "clean": "rimraf dist"
+    "test": "jest --passWithNoTests"
   },
   "keywords": [],
   "author": "",

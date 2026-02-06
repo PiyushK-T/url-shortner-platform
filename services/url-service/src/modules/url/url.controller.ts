@@ -10,9 +10,17 @@ export async function createUrlHandler(
     const { longUrl } = req.body;
     const ownerEmail = req.headers["x-user-email"] as string;
 
+    if (!longUrl) {
+      return res.status(400).json({ error: "longUrl is required" });
+    }
+
+    if (!ownerEmail) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const result = urlService.createShortUrl(longUrl, ownerEmail);
 
-    res.status(201).json(result);
+    return res.status(201).json(result);
   } catch (err) {
     next(err);
   }
@@ -24,18 +32,15 @@ export async function redirectHandler(
   next: NextFunction
 ) {
   try {
-    const param = req.params.code;
+    const code =
+      typeof req.params.code === "string"
+        ? req.params.code
+        : req.params.code[0];
 
-    if (!param || Array.isArray(param)) {
-      return res.status(400).json({
-        error: "Invalid short URL code"
-      });
-    }
+    const longUrl = await urlService.resolveUrl(code);
 
-    const longUrl = await urlService.resolveUrl(param);
-
-    res.redirect(302, longUrl);
-  } catch (err) {
-    next(err);
+    return res.redirect(302, longUrl);
+  } catch {
+    return res.status(404).json({ error: "URL not found" });
   }
 }
