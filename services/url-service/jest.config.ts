@@ -4,23 +4,13 @@ const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
 
-  roots: ["<rootDir>/tests"],
+  testPathIgnorePatterns: ["/dist/"],
+  modulePathIgnorePatterns: ["/dist/"],
+  watchPathIgnorePatterns: ["/dist/"],
 
-  modulePathIgnorePatterns: ["<rootDir>/dist"],
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
 
-  maxWorkers: 1,
-
-  detectOpenHandles: true,
-  forceExit: true,
-
-  clearMocks: true,
-  resetMocks: true,
-  restoreMocks: true,
-
-  moduleNameMapper: {
-    "^axios$": "<rootDir>/tests/__mocks__/axios.ts",
-    "^nanoid$": "<rootDir>/tests/__mocks__/nanoid.ts"
-  }
+  clearMocks: true
 };
 
 export default config;

@@ -1,7 +1,8 @@
 import { nanoid } from "nanoid";
 import axios from "axios";
-// import { env } from "../../config/env";
+import { redisClient } from "../../config/redis";
 import { getEnv } from "../../config/env";
+
 const env = getEnv();
 
 type UrlRecord = {
@@ -10,41 +11,42 @@ type UrlRecord = {
   ownerEmail: string;
 };
 
-const urls = new Map<string, UrlRecord>();
+const URL_PREFIX = "url:";
 
-export function createShortUrl(longUrl: string, ownerEmail: string) {
+export async function createShortUrl(
+  longUrl: string,
+  ownerEmail: string
+) {
   let code = nanoid(7);
+  let key = `${URL_PREFIX}${code}`;
 
-  while (urls.has(code)) {
+  while (await redisClient.exists(key)) {
     code = nanoid(7);
+    key = `${URL_PREFIX}${code}`;
   }
 
   const record: UrlRecord = { code, longUrl, ownerEmail };
-  urls.set(code, record);
+  await redisClient.set(key, JSON.stringify(record));
 
-  return {
-    shortUrl: `${env.BASE_URL}/${code}`
-  };
+  return { shortUrl: `${env.BASE_URL}/${code}` };
 }
 
 export async function resolveUrl(code: string) {
-  const record = urls.get(code);
-  if (!record) {
+  const key = `${URL_PREFIX}${code}`;
+  const raw = await redisClient.get(key);
+
+  if (!raw) {
     throw new Error("URL not found");
   }
 
-  if (process.env.NODE_ENV !== "test") {
-    axios
-      .post(`${env.ANALYTICS_SERVICE_URL}/events`, {
-        code,
-        timestamp: new Date().toISOString()
-      })
-      .catch(() => {});
-  }
+  const record = JSON.parse(raw) as UrlRecord;
+
+  axios
+    .post(`${env.ANALYTICS_SERVICE_URL}/events`, {
+      code,
+      timestamp: new Date().toISOString()
+    })
+    .catch(() => {});
 
   return record.longUrl;
-}
-
-export function __clearUrlsForTests() {
-  urls.clear();
 }
