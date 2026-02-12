@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc",
-    "test": "jest --passWithNoTests"
+    "test": "set NODE_ENV=test && jest --passWithNoTests"
   },
   "keywords": [],
   "author": "",

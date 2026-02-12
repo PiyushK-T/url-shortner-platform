@@ -3,17 +3,31 @@ import { getEnv } from "./env";
 
 const env = getEnv();
 
-export const redisClient = createClient({
-  url: env.REDIS_URL
-});
+let redisClient: any = null;
 
-redisClient.on("error", (err) => {
-  console.error("[Redis] Error", err);
-});
+export function getRedisClient() {
+  if (process.env.NODE_ENV === "test") {
+    return {
+      exists: async () => 0,
+      set: async () => {},
+      get: async () => null,
+      quit: async () => {}
+    };
+  }
+
+  if (!redisClient) {
+    redisClient = createClient({
+      url: env.REDIS_URL
+    });
+  }
+
+  return redisClient;
+}
 
 export async function connectRedis() {
-  if (!redisClient.isOpen) {
-    await redisClient.connect();
-    console.log("[Redis] Connected");
-  }
+  if (process.env.NODE_ENV === "test") return;
+
+  const client = getRedisClient();
+  await client.connect();
+  console.log("Redis connected");
 }
