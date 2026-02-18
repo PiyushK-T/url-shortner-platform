@@ -1,5 +1,5 @@
 import request from "supertest";
-import { app } from "../app";
+import app from "../app";
 import {
   HEADER_REQUEST_ID,
   HEADER_USER_EMAIL,

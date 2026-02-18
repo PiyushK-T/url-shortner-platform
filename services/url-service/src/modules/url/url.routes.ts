@@ -6,8 +6,8 @@ import {
 
 export const urlRouter = Router();
 
-// protected
+// protected create
 urlRouter.post("/", createUrlHandler);
 
-// public
+// public redirect
 urlRouter.get("/:code", redirectHandler);

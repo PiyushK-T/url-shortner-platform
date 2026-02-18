@@ -1,12 +1,14 @@
-import dotenv from "dotenv";
-dotenv.config();
+import app from "./app";
+import { connectRedis } from "./config/redis";
 
-import { app } from "./app";
-import { getEnv } from "./config/env";
+const PORT = process.env.PORT || 3000;
 
-const { PORT } = getEnv();
-const port = PORT ? Number(PORT) : 4002;
+async function start() {
+  await connectRedis();
 
-app.listen(port, () => {
-  console.log(`URL service running on port ${port}`);
-});
+  app.listen(PORT, () => {
+    console.log(`URL Service running on port ${PORT}`);
+  });
+}
+
+start();

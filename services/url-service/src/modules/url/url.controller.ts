@@ -13,13 +13,11 @@ export async function createUrlHandler(
     if (!longUrl) {
       return res.status(400).json({ error: "longUrl is required" });
     }
-
     if (!ownerEmail) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const result = urlService.createShortUrl(longUrl, ownerEmail);
-
+    const result = await urlService.createShortUrl(longUrl, ownerEmail);
     return res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -32,13 +30,11 @@ export async function redirectHandler(
   next: NextFunction
 ) {
   try {
-    const code =
-      typeof req.params.code === "string"
-        ? req.params.code
-        : req.params.code[0];
+    const code = Array.isArray(req.params.code)
+      ? req.params.code[0]
+      : req.params.code;
 
     const longUrl = await urlService.resolveUrl(code);
-
     return res.redirect(302, longUrl);
   } catch {
     return res.status(404).json({ error: "URL not found" });
