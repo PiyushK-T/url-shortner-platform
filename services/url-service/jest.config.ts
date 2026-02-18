@@ -13,4 +13,15 @@ const config: Config = {
   clearMocks: true
 };
 
-export default config;
+// export default config;
+
+export default {
+  preset: "ts-jest",
+  testEnvironment: "node",
+  moduleNameMapper: {
+    "^redis$": "<rootDir>/tests/__mocks__/redis.ts",
+  },
+  testPathIgnorePatterns: ["/dist/"],
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
+};

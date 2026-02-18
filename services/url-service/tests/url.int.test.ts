@@ -4,10 +4,6 @@ import { getEnv } from "../src/config/env";
 
 const env = getEnv();
 
-afterEach(() => {
-  jest.clearAllMocks();
-});
-
 describe("URL Service", () => {
   it("creates a short URL", async () => {
     const res = await request(app)

@@ -1,10 +1,9 @@
 import { nanoid } from "nanoid";
 import axios from "axios";
-import { getRedisClient } from "../../config/redis";
+import { redisClient } from "../../config/redis";
 import { getEnv } from "../../config/env";
 
 const env = getEnv();
-const redisClient = getRedisClient();
 
 type UrlRecord = {
   code: string;
@@ -21,7 +20,8 @@ export async function createShortUrl(
   let code = nanoid(7);
   let key = `${URL_PREFIX}${code}`;
 
-  while (await redisClient.exists(key)) {
+  // ensure uniqueness
+  while ((await redisClient.exists(key)) === 1) {
     code = nanoid(7);
     key = `${URL_PREFIX}${code}`;
   }
@@ -33,9 +33,21 @@ export async function createShortUrl(
 }
 
 export async function resolveUrl(code: string): Promise<string> {
-  if (code === "testcode") {
-    return "https://example.com";
+  const key = `${URL_PREFIX}${code}`;
+  const raw = await redisClient.get(key);
+
+  if (!raw) {
+    throw new Error("URL not found");
   }
 
-  throw new Error("Not found");
+  const record = JSON.parse(raw) as UrlRecord;
+
+  axios
+    .post(`${env.ANALYTICS_SERVICE_URL}/events`, {
+      code,
+      timestamp: new Date().toISOString()
+    })
+    .catch(() => {});
+
+  return record.longUrl;
 }

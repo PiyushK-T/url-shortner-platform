@@ -12,11 +12,6 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 /**
  * Connect Redis
- * IMPORTANT:
- * Skip Redis connection during tests to prevent:
- * - reconnect loops
- * - open handles
- * - Jest memory leaks
  */
 if (process.env.NODE_ENV !== "test") {
     (0, redis_1.connectRedis)().catch((err) => {
@@ -30,7 +25,9 @@ if (process.env.NODE_ENV !== "test") {
 app.use((req, _res, next) => {
     const requestId = req.headers["x-request-id"] ?? "unknown";
     const userEmail = req.headers["x-user-email"] ?? "anonymous";
-    console.log(`[URL Service] [${requestId}] user=${userEmail} ${req.method} ${req.path}`);
+    // console.log(
+    //   `[URL Service] [${requestId}] user=${userEmail} ${req.method} ${req.path}`
+    // );
     next();
 });
 /**

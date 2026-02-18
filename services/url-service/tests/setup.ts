@@ -1,5 +1,12 @@
-import { connectRedis } from "../src/config/redis";
+import { createClient } from "redis";
 
-beforeAll(async () => {
-  await connectRedis();
+jest.mock("redis");
+
+afterEach(() => {
+  jest.clearAllMocks();
+
+  const client: any = createClient();
+  if (client.__resetStore) {
+    client.__resetStore();
+  }
 });

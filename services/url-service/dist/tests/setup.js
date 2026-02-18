@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const redis_1 = require("../src/config/redis");
-beforeAll(async () => {
-    await (0, redis_1.connectRedis)();
+const redis_1 = require("redis");
+jest.mock("redis");
+afterEach(() => {
+    jest.clearAllMocks();
+    const client = (0, redis_1.createClient)();
+    if (client.__resetStore) {
+        client.__resetStore();
+    }
 });

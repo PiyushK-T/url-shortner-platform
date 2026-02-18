@@ -1,14 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createClient = void 0;
-const store = new Map();
+let store = {};
 exports.createClient = jest.fn(() => ({
-    isOpen: true,
     connect: jest.fn(),
-    on: jest.fn(),
-    exists: jest.fn(async (key) => (store.has(key) ? 1 : 0)),
+    disconnect: jest.fn(),
+    exists: jest.fn(async (key) => (store[key] ? 1 : 0)),
+    get: jest.fn(async (key) => store[key] ?? null),
     set: jest.fn(async (key, value) => {
-        store.set(key, value);
+        store[key] = value;
+        return "OK";
     }),
-    get: jest.fn(async (key) => store.get(key) ?? null)
+    __resetStore: () => {
+        store = {};
+    },
 }));
